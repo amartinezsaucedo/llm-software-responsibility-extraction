@@ -14,12 +14,14 @@ RUN pip install poetry
 RUN pip install jupyter notebook
 RUN pip install poetry-kernel
 
-WORKDIR /llama
+WORKDIR /llm-sre
+COPY . /llm-sre
 
-COPY pyproject.toml .
-COPY poetry.lock .
+RUN poetry env use $(which python3.10)
+RUN poetry config virtualenvs.create false
+RUN poetry install 
 
-RUN poetry install
+RUN CMAKE_ARGS="-DLLAMA_CUBLAS=1" FORCE_CMAKE=1 LLAMA_CUBLAS=1 poetry run pip install llama-cpp-python --force-reinstall --upgrade --no-cache-dir --verbose
 
 EXPOSE 8888
 CMD jupyter notebook --no-browser --port 8888 --ip=* --allow-root
