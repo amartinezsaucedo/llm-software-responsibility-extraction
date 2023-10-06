@@ -12,5 +12,7 @@ class LLMDirector:
         self._builder.set_model_configuration()
         self._builder.set_inference_configuration()
         self._builder.set_system_message()
+        self._builder.set_memory()
+        self._builder.set_output_parser()
         self._builder.set_prompt_template()
         return self._builder.get_llm()

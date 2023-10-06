@@ -33,7 +33,7 @@ def extract_responsibilities_from_requirements(requirements: List[Requirement]) 
     llm = director.construct_llama_llm()
     responsibilities = []
     for requirement in requirements:
-        llm.prompt(requirement.get_text())
+        requirement.add_responsibilities(llm.prompt(requirement.get_text()))
     return responsibilities
 
 
