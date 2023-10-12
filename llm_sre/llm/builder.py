@@ -1,4 +1,4 @@
-from .llm import LLM
+from llm_sre.llm.llm import LLM
 
 
 class LLMBuilder:
@@ -13,7 +13,7 @@ class LLMBuilder:
 
     def set_output_parser(self):
         pass
-    
+
     def set_prompt_template(self):
         pass
 

@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "llm-sre"
+name = "llm_sre"
 version = "0.1.0"
 description = ""
 authors = ["Ana Martinez Saucedo <anmartinez@uade.edu.ar>"]
@@ -10,6 +10,7 @@ python = "^3.10"
 ipykernel = "^6.25.2"
 langchain = {extras = ["llm"], version = "^0.0.299"}
 pydantic = "^2.4.1"
+networkx = {extras = ["default"], version = "^3.1"}
 
 
 [tool.poetry.group.dev.dependencies]
