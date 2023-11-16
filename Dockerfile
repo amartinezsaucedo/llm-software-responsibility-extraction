@@ -3,6 +3,11 @@ FROM nvidia/cuda:12.1.1-devel-ubuntu20.04
 ENV TZ=America/Argentina/Buenos_Aires
 RUN ln -snf /usr/share/zoneinfo/$TZ /etc/localtime && echo $TZ > /etc/timez
 
+RUN adduser --disabled-password --gecos "" ana && \
+    echo 'ana ALL=(ALL) NOPASSWD: ALL' >> /etc/sudoers \
+
+USER ana
+
 RUN apt-get update && \
     apt-get install -y software-properties-common && \
     add-apt-repository -y ppa:deadsnakes/ppa && \
@@ -14,8 +19,9 @@ RUN pip install poetry
 RUN pip install jupyter notebook
 RUN pip install poetry-kernel
 
-WORKDIR /llm-sre
-COPY . /llm-sre
+WORKDIR /home/ana/llm-sre
+COPY --chown=nonroot:nonroot . /home/ana/llm-sre
+RUN chmod -R 755 /home/ana/llm-sre
 
 RUN poetry env use $(which python3.10)
 RUN poetry config virtualenvs.create false

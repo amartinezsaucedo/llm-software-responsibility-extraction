@@ -12,7 +12,7 @@ services:
     ports:
       - 8888:8888
     volumes:
-      - ./:/llm-sre
+      - ./:/home/ana/llm-sre
 
 volumes:
   llm-sre:

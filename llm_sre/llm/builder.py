@@ -20,5 +20,8 @@ class LLMBuilder:
     def set_memory(self):
         pass
 
+    def set_llm(self):
+        pass
+
     def get_llm(self) -> LLM:
         pass

@@ -1,7 +1,7 @@
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.llms import LlamaCpp
-from langchain.memory import ConversationBufferMemory
+from langchain.memory import ConversationBufferMemory, ReadOnlySharedMemory
 from langchain.output_parsers import CommaSeparatedListOutputParser
 from langchain.prompts import (
     ChatPromptTemplate,
@@ -17,7 +17,7 @@ class LlamaREBuilder(LLMBuilder):
     _llm: LlamaCpp
     _inference_configuration: dict
     _model_configuration: dict
-    _memory: ConversationBufferMemory
+    _memory: ReadOnlySharedMemory
     _prompt: ChatPromptTemplate
     _system_message: str
     _output_parser: CommaSeparatedListOutputParser
@@ -74,7 +74,7 @@ class LlamaREBuilder(LLMBuilder):
         if system_message:
             self._system_message = system_message
         else:
-            self._system_message = "You are a concise and precise assistant that list from the following requirement the responsibilities. To identify responsibilities use the following rules:\nRules:\nA - A responsibility is a verb in base form, 3rd person singular present, or non-3rd person singular present, gerund form, which is associated to a direct object and optionally to the subject performing the action indicated by the verb.\nB - A responsibility is a verb associated to a direct object and optionally to the subject performing the action indicated by the verb, when a verb is actually a phrasal verb modified by preposition, or when using passive voice structures in which the action receives more attention than the subject that performs it; thus, it is rather common that these structures lack the subject of the action.\nC - A responsibility is when a verb is actually a phrasal verb modified by preposition.\n{format_instructions}\nAnswer concisely and precisely, do not add information or context"
+            self._system_message = "You are a concise, precise and truthful assistant that list from a requirement the responsibilities. To identify responsibilities you use the following rules:\nRules:\nA - A responsibility is a verb in base form, 3rd person singular present, or non-3rd person singular present, gerund form, which is associated to a direct object and optionally to the subject performing the action indicated by the verb.\nB - A responsibility is a verb associated to a direct object and optionally to the subject performing the action indicated by the verb, when a verb is actually a phrasal verb modified by preposition, or when using passive voice structures in which the action receives more attention than the subject that performs it; thus, it is rather common that these structures lack the subject of the action.\nC - A responsibility is when a verb is actually a phrasal verb modified by preposition.\n{format_instructions}\nIf none of the rules match, you answer \"None\". List responsibilities concisely and precisely, and do not make up information. Do not add any word and use the requirement text only"
 
     def set_output_parser(self):
         self._output_parser = CommaSeparatedListOutputParser()
@@ -85,33 +85,58 @@ class LlamaREBuilder(LLMBuilder):
             messages=[
                 SystemMessagePromptTemplate.from_template(self._system_message),
                 MessagesPlaceholder(variable_name="chat_history"),
-                HumanMessagePromptTemplate.from_template("{requirement}"),
+                HumanMessagePromptTemplate.from_template("Requirement:\"{requirement}\""),
             ],
             partial_variables={"format_instructions": format_instructions},
         )
 
     def set_memory(self):
-        self._memory = ConversationBufferMemory(
+        memory = ConversationBufferMemory(
             memory_key="chat_history", return_messages=True
         )
-        self._memory.save_context(
+        memory.save_context(
             {
-                "input": "If a student accesses the system then the student can add a new course or drop an added course"
+                "input": "Requirement: \"If a student accesses the system then the student can add a new course or "
+                         "drop an added course\""
             },
             {"output": "access system, add course, drop course"},
         )
-        self._memory.save_context(
+        memory.save_context(
             {
-                "input": "After the student adds a course, the system sends the transaction information to the billing system"
+                "input": "Requirement: \"After the student adds a course, the system sends the transaction "
+                         "information to the billing system\""
             },
-            {"output": "add course, send information to billing system"},
+            {"output": "add course, send information"},
         )
+        memory.save_context(
+            {
+                "input": "Requirement: \"The system shall list the classes that a student can attend\""
+            },
+            {"output": "list classes"},
+        )
+        memory.save_context(
+            {
+                "input": "Requirement: \"The student can click on the \"list courses\" button for listing its added "
+                         "courses\""
+            },
+            {"output": "click button, list courses"},
+        )
+        memory.save_context(
+            {
+                "input": "Requirement: \"When the student drops a course, a confirmation dialog is displayed on the "
+                         "screen\""
+            },
+            {"output": "drop course, display dialog"},
+        )
+        self._memory = ReadOnlySharedMemory(memory=memory)
 
-    def get_llm(self) -> LLMRE:
+    def set_llm(self):
         callback_manager = CallbackManager([StreamingStdOutCallbackHandler()])
         self._llm = LlamaCpp(
             callback_manager=callback_manager,
             **self._model_configuration,
             **self._inference_configuration
         )
+
+    def get_llm(self) -> LLMRE:
         return LLMRE(self._llm, self._prompt, self._memory)

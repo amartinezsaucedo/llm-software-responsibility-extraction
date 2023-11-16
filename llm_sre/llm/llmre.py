@@ -8,5 +8,7 @@ class LLMRE(LLM):
 
     def _get_responsibilities(self, output: str) -> list:
         if "AI" in output:
-            return output.split("AI:")[-1].strip().split(",")
+            responsibilities = output.split("AI:")[-1].strip().replace(".", "").split(",")
+            responsibilities = [responsibility.strip() for responsibility in responsibilities]
+            return list(filter(lambda responsibility: responsibility != "None", responsibilities))
         return []

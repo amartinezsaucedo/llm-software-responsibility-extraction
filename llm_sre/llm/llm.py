@@ -1,12 +1,12 @@
 from langchain.llms import LlamaCpp
-from langchain.memory import ConversationBufferMemory
+from langchain.memory.chat_memory import BaseChatMemory
 from langchain.prompts import ChatPromptTemplate
 from langchain.chains import LLMChain
 
 
 class LLM:
     _llm: LlamaCpp
-    _memory: ConversationBufferMemory
+    _memory: BaseChatMemory
     _prompt: ChatPromptTemplate
     _chain: LLMChain
 
@@ -14,12 +14,12 @@ class LLM:
         self,
         llm: LlamaCpp,
         prompt: ChatPromptTemplate,
-        memory: ConversationBufferMemory,
+        memory: BaseChatMemory,
     ):
         self._llm = llm
         self._memory = memory
         self._prompt = prompt
         self._chain = LLMChain(llm=llm, prompt=prompt, memory=memory, verbose=True)
 
-    def prompt(self, **kwargs):
+    def prompt(self, **args):
         pass
