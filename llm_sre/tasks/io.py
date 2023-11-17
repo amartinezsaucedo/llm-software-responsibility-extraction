@@ -5,7 +5,7 @@ from llm_sre.models.requirement import Requirement
 
 
 def save_object(filename: str, folder: str, data: object):
-    with open(f"{folder}/{filename}.pkl", 'rb') as out:
+    with open(f"{folder}/{filename}.pkl", 'wb') as out:
         pickle.dump(data, out, pickle.HIGHEST_PROTOCOL)
 
 
