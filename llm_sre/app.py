@@ -6,14 +6,13 @@ from llm_sre.tasks.responsibility_extractor import extract_responsibilities_from
 from llm_sre.tasks.responsibility_sequencer import sequentialize_responsibilities
 from llm_sre.tasks.responsibility_analyzer import draw_responsibility_graphs
 
-
 parser = argparse.ArgumentParser("Responsibility extraction using LLM")
 parser.add_argument("-n", "--name", help="Project name", required=True)
 parser.add_argument("-f", "--file", help="Requirements file")
 parser.add_argument("-t", "--task", help="Task to execute", choices=AVAILABLE_TASKS, type=str, required=True)
 parser.add_argument("-o", "--output", help="Output folder to save results", type=str, required=True)
-parser.add_argument("-a", "-add_responsibilities", help="Flag to indicate whether to add responsibilities in other "
-                                                        "steps", type=bool, default=False)
+parser.add_argument("-a", "--add_responsibilities", help="Flag to indicate whether to add responsibilities in other "
+                                                         "steps", type=bool, default=False)
 args = parser.parse_args()
 
 task = args.task
