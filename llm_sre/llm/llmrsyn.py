@@ -3,10 +3,9 @@ from llm_sre.llm.llm import LLM
 
 
 class LLMRSYN(LLM):
-    def prompt(self, responsibilities: list[Responsibility], contexts: list[str]) -> bool:
+    def _prepare_prompt(self, responsibilities: list[Responsibility], contexts: list[str]):
         if len(responsibilities) == 2:
-            output = self._chain(
-                {
+            self._input = {
                     "responsibilities": self._format_responsibilities_to_prompt(
                         responsibilities
                     ),
@@ -14,9 +13,6 @@ class LLMRSYN(LLM):
                         contexts
                     ),
                 }
-            )
-            return self._get_response_from_output(output["text"])
-        return False
 
     def _format_responsibilities_to_prompt(self, responsibilities: list[Responsibility]) -> str:
         return "\n".join([f"Sentence {responsibility_id}: '{responsibility.get_text()}'"
@@ -26,7 +22,7 @@ class LLMRSYN(LLM):
         return "\n".join([f"Context {context_id}: '{context}'"
                           for (context_id, context) in enumerate(contexts)])
 
-    def _get_response_from_output(self, output: str) -> bool:
+    def _post_process_output(self, output: str) -> bool:
         if "AI" in output:
             return output.split("AI:")[-1].strip().lower() == "True"
         return False

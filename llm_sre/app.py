@@ -13,6 +13,7 @@ parser.add_argument("-t", "--task", help="Task to execute", choices=AVAILABLE_TA
 parser.add_argument("-o", "--output", help="Output folder to save results", type=str, required=True)
 parser.add_argument("-a", "--add_responsibilities", help="Flag to indicate whether to add responsibilities in other "
                                                          "steps", type=bool, default=False)
+parser.add_argument("-e", "--evaluate", help="Flag to indicate whether to evaluate results", type=bool, default=False)
 args = parser.parse_args()
 
 task = args.task
@@ -20,14 +21,16 @@ name = args.name
 file = args.file
 output_folder = args.output
 add_responsibilities = args.add_responsibilities
+evaluate = args.evaluate
 
 if task == "extract":
-    requirements = extract_responsibilities_from_file(file)
+    requirements = extract_responsibilities_from_file(file, evaluate)
     save_object(name, output_folder, requirements)
 
 elif task == "sequence":
     requirements = open_file(name, output_folder)
-    sequentialize_responsibilities(requirements, add_responsibilities)
+    sequentialize_responsibilities(requirements, add_responsibilities, evaluate)
+    save_object(name, output_folder, requirements)
 
 elif task == "export":
     requirements = open_file(name, output_folder)

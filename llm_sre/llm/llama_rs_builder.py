@@ -1,3 +1,4 @@
+from deepeval.metrics import HallucinationMetric, BaseMetric
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.llms import LlamaCpp
@@ -24,6 +25,7 @@ class LlamaRSBuilder(LLMBuilder):
     _output_parser: CommaSeparatedListOutputParser
     B_INST, E_INST = "[INST]", "[/INST]"
     B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
+    _metrics: list[BaseMetric]
 
     def set_inference_configuration(self):
         self._inference_configuration = {
@@ -173,5 +175,8 @@ class LlamaRSBuilder(LLMBuilder):
             **self._inference_configuration
         )
 
-    def get_llm(self) -> LLMRS:
-        return LLMRS(self._llm, self._prompt, self._memory)
+    def set_metrics(self):
+        self._metrics = [HallucinationMetric(minimum_score=0.5)]  # , AnswerRelevancyMetric(minimum_score=0.7)]
+
+    def get_llm(self, evaluate: bool) -> LLMRS:
+        return LLMRS(self._llm, self._prompt, self._prompt_template, self._metrics, evaluate)

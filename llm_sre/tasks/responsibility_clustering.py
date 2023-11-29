@@ -4,9 +4,9 @@ from llm_sre.llm.llama_rsyn_builder import LlamaRSYNBuilder
 from llm_sre.models.responsibility import Responsibility
 
 
-def cluster_responsibilities(requirements: list[Requirement]):
+def cluster_responsibilities(requirements: list[Requirement], evaluate: bool):
     director = LLMDirector(LlamaRSYNBuilder())
-    llm = director.construct_llama_llm_responsibility_synonym()
+    llm = director.construct_llama_llm_responsibility_synonym(evaluate)
     responsibilities = [
         (responsibility, responsibility.get_sentence_id(),
          requirement.get_sentence_by_index(responsibility.get_sentence_id()))

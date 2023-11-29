@@ -1,3 +1,4 @@
+from deepeval.metrics import HallucinationMetric, BaseMetric
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.llms import LlamaCpp
@@ -20,6 +21,7 @@ class LlamaRSYNBuilder(LLMBuilder):
     _prompt: ChatPromptTemplate
     _prompt_template: HumanMessagePromptTemplate
     _system_message: str
+    _metrics: list[BaseMetric]
     B_INST, E_INST = "[INST]", "[/INST]"
     B_SYS, E_SYS = "<<SYS>>\n", "\n<</SYS>>\n\n"
 
@@ -132,5 +134,8 @@ class LlamaRSYNBuilder(LLMBuilder):
             **self._inference_configuration
         )
 
-    def get_llm(self) -> LLMRSYN:
-        return LLMRSYN(self._llm, self._prompt, self._memory)
+    def set_metrics(self):
+        self._metrics = [HallucinationMetric(minimum_score=0.5)]
+
+    def get_llm(self, evaluate: bool) -> LLMRSYN:
+        return LLMRSYN(self._llm, self._prompt, self._prompt_template, self._memory, self._metrics, evaluate)

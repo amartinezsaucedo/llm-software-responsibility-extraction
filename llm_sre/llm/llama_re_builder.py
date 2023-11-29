@@ -1,3 +1,4 @@
+from deepeval.metrics import HallucinationMetric, BaseMetric
 from langchain.callbacks.manager import CallbackManager
 from langchain.callbacks.streaming_stdout import StreamingStdOutCallbackHandler
 from langchain.llms import LlamaCpp
@@ -140,3 +141,8 @@ class LlamaREBuilder(LLMBuilder):
 
     def get_llm(self) -> LLMRE:
         return LLMRE(self._llm, self._prompt, self._memory)
+    def set_metrics(self):
+        self._metrics = [HallucinationMetric(minimum_score=0.5)]
+
+    def get_llm(self, evaluate: bool) -> LLMRE:
+        return LLMRE(self._llm, self._prompt, self._prompt_template, self._metrics, evaluate)
