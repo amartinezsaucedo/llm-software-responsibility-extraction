@@ -17,11 +17,11 @@ class LLMBuilder:
     def set_prompt_template(self):
         pass
 
-    def set_memory(self):
-        pass
-
     def set_llm(self):
         pass
 
-    def get_llm(self) -> LLM:
+    def get_llm(self, evaluate: bool) -> LLM:
+        pass
+
+    def set_metrics(self):
         pass
