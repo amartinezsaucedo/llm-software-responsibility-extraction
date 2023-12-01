@@ -10,10 +10,10 @@ class LLMDirector:
     def __init__(self, builder: LLMBuilder):
         self._builder = builder
 
-    def construct_llama_llm_responsibility_extraction(self, requirements_file_path: str, chat: bool,
+    def construct_llama_llm_responsibility_extraction(self, requirements_file_path: str, model_path: str, chat: bool,
                                                       evaluate: bool) -> LLMRE:
         self._builder.set_requirements_file(requirements_file_path)
-        self._builder.set_model_configuration()
+        self._builder.set_model_configuration(model_path)
         self._builder.set_inference_configuration()
         self._builder.set_llm()
         self._builder.set_system_message()
@@ -24,10 +24,10 @@ class LLMDirector:
         self._builder.set_metrics()
         return self._builder.get_llm(evaluate)
 
-    def construct_llama_llm_responsibility_sequencing(self, requirements_file_path: str, chat: bool,
+    def construct_llama_llm_responsibility_sequencing(self, requirements_file_path: str, model_path: str, chat: bool,
                                                       evaluate: bool) -> LLMRS:
         self._builder.set_requirements_file(requirements_file_path)
-        self._builder.set_model_configuration()
+        self._builder.set_model_configuration(model_path)
         self._builder.set_inference_configuration()
         self._builder.set_llm()
         self._builder.set_system_message()

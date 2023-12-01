@@ -30,7 +30,7 @@ class LLMBuilder:
     def set_inference_configuration(self):
         pass
 
-    def set_model_configuration(self):
+    def set_model_configuration(self, model_path: str):
         pass
 
     def set_system_message(self, system_message: str = None):

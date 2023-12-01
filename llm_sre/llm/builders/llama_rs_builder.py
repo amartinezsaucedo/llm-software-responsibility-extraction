@@ -19,8 +19,8 @@ class LlamaRSBuilder(LLMBuilder):
     def set_inference_configuration(self):
         self._inference_configuration = InferenceConfigurationBuilder().build()
 
-    def set_model_configuration(self):
-        self._model_configuration = ModelConfigurationBuilder().build()
+    def set_model_configuration(self, model_path: str):
+        self._model_configuration = ModelConfigurationBuilder().set_model_path(model_path).build()
 
     def set_metrics(self):
         self._metrics = [HallucinationMetric(minimum_score=0.5)]  # , AnswerRelevancyMetric(minimum_score=0.7)]
