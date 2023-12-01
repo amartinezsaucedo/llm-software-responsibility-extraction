@@ -35,4 +35,8 @@ def parse_prompt_with_examples(instruction_steps: list[str], examples: list[Exam
 
 
 def parse_prompt_llama(examples: list[Example], prompt_input: str) -> str:
-    return f"""Examples:\n{NEW_LINE.join([example.get_text() for example in examples])}\n- QUESTION: {prompt_input}"""
+    return f"""{parse_examples(examples)}- QUESTION: {prompt_input}"""
+
+
+def parse_examples(examples: list[Example]) -> str:
+    return f"""Examples:\n{NEW_LINE.join([example.get_text() for example in examples])}\n"""

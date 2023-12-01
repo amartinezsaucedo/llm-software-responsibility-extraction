@@ -1,6 +1,6 @@
 from llm_sre.models.requirement import Requirement
-from llm_sre.llm.director import LLMDirector
-from llm_sre.llm.llama_re_builder import LlamaREBuilder
+from llm_sre.llm.builders.director import LLMDirector
+from llm_sre.llm.builders.llama_re_builder import LlamaREBuilder
 
 
 def _extract_requirements(path: str) -> list[Requirement]:
@@ -30,9 +30,10 @@ def _is_requirement_section(string: str) -> bool:
     return string.startswith("@Requirement")
 
 
-def _extract_responsibilities_from_requirements(requirements: list[Requirement], evaluate: bool) -> list[Requirement]:
+def _extract_responsibilities_from_requirements(requirements_file_path: str, requirements: list[Requirement],
+                                                chat: bool, evaluate: bool) -> list[Requirement]:
     director = LLMDirector(LlamaREBuilder())
-    llm = director.construct_llama_llm_responsibility_extraction(evaluate)
+    llm = director.construct_llama_llm_responsibility_extraction(requirements_file_path, chat, evaluate)
     for requirement in requirements:
         responsibilities = []
         sentences = requirement.get_text().split(".")
@@ -60,11 +61,11 @@ def _preprocess_sentences(requirement: list[str]) -> list[str]:
     return sentences
 
 
-def extract_responsibilities_from_file(input_path: str, evaluate: bool) -> list[Requirement]:
+def extract_responsibilities_from_file(input_path: str, chat: bool, evaluate: bool) -> list[Requirement]:
     requirements = _extract_requirements(input_path)
-    return _extract_responsibilities_from_requirements(requirements, evaluate)
+    return _extract_responsibilities_from_requirements(input_path, requirements, chat, evaluate)
 
 
 if __name__ == "__main__":
-    extract_responsibilities_from_file("./cases/example.txt", False)
+    extract_responsibilities_from_file("./cases/example.txt", False, False)
 

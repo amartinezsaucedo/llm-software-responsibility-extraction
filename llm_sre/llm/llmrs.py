@@ -28,11 +28,12 @@ class LLMRS(LLM):
         shuffle(enumerated_responsibilities)
         return "\n".join(enumerated_responsibilities)
 
-    def _get_causal_relationships_from_output(self, output: str, requirement: Requirement, sentence_index: int,
-                                              add_responsibilities_if_missing: bool):
-        if "AI" in output:
-            causal_relationships = output.split("AI:")[-1].strip().split(",")
     def _post_process_output(self, output: str) -> Requirement:
+        prefix = "AI:"
+        if not prefix in output:
+            prefix = "ANSWER:"
+        if prefix in output:
+            causal_relationships = output.split(prefix)[-1].strip().split(",")
             for relationship in causal_relationships:
                 involved_responsibilities = [relationship.strip().replace("\"", "")
                                              for relationship in relationship.split("->")]

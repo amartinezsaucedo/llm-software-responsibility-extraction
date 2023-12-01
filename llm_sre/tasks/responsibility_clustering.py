@@ -1,6 +1,6 @@
 from llm_sre.models.requirement import Requirement
-from llm_sre.llm.director import LLMDirector
-from llm_sre.llm.llama_rsyn_builder import LlamaRSYNBuilder
+from llm_sre.llm.builders.director import LLMDirector
+from llm_sre.llm.builders.llama_rsyn_builder import LlamaRSYNBuilder
 from llm_sre.models.responsibility import Responsibility
 
 

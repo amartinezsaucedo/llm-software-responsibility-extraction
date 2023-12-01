@@ -11,7 +11,10 @@ class LLMRE(LLM):
         if not prefix in output:
             prefix = "ANSWER:"
         if prefix in output:
-            responsibilities = output.split(prefix)[-1].strip().replace(".", "").split(",")
+            output = output.split("QUESTION:")[0]  # Sometimes, LLM repeats question, although first part of
+            # the response is correct
+            responsibilities = output.split(prefix)[-1].strip().replace(".", "").replace("\"", "").split(",")
             responsibilities = [responsibility.strip() for responsibility in responsibilities]
-            return list(filter(lambda responsibility: responsibility != "None", responsibilities))
+            return list(filter(lambda responsibility: responsibility and
+                                                      responsibility != "None", responsibilities))
         return []
