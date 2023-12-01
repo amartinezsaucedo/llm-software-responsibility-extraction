@@ -11,46 +11,51 @@ A responsibility may be a "cause" and "effect" or none of them.
 If no causal relationship exists between responsibilities, answer "None".
 Do not add relationships in which "cause" or "effect" are not in the responsibilities list.
 Template:
-Sentence:
-{requirement}
-Responsibilities:
+List causal relationships between these responsibilities:
 {responsibilities}
+analyzing this sentence:
+{requirement}
 Examples:
 Human:
-"If a student accesses the system then the student can add a new course or drop an added course"
-Responsibilities:
+List causal relationships between these responsibilities:
 "access system"
 "add course"
 "drop course"
+analyzing this sentence:
+"If a student accesses the system then the student can add a new course or drop an added course"
 AI:
 "access system"->"add course", "access system"->"drop course"
 Human:
-"After the student adds a course, the system sends the transaction information to the billing system"
-Responsibilities:
+List causal relationships between these responsibilities:
 "send information"
 "add course"
+analyzing this sentence:
+"After the student adds a course, the system sends the transaction information to the billing system"
 AI:
 "add course"->"send information"
 Human:
-"The system shall list the classes that a student can attend"
-Responsibilities:
+List causal relationships between these responsibilities:
 "list classes"
+analyzing this sentence:
+"The system shall list the classes that a student can attend"
 AI:
 None
 Human:
-"The student can click on the "list courses" button for listing its added courses"
-Responsibilities:
+List causal relationships between these responsibilities:
 "list courses"
 "click button"
+analyzing this sentence:
+"The student can click on the "list courses" button for listing its added courses"
 AI:
 "click button"->"list courses"
 Human:
-"When the student drops a course, a confirmation dialog is displayed on the screen. Then, if the student confirms deletion, course is deleted and marked as inactive"
-Responsibilities:
+List causal relationships between these responsibilities:
 "drop course"
 "display dialog"
 "confirm deletion"
 "delete course"
 "mark course"
+analyzing this sentence:
+"When the student drops a course, a confirmation dialog is displayed on the screen. Then, if the student confirms deletion, course is deleted and marked as inactive"
 AI:
 drop course"->"display dialog", "confirm deletion"->"delete course", "confirm deletion"->"mark course"
