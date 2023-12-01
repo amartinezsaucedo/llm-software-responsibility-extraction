@@ -15,6 +15,11 @@ RUN apt-get update && \
     apt install -y python3.10 python3-pip && \
     rm -rf /var/lib/apt/lists/*
 
+RUN add-apt-repository -y ppa:ubuntu-toolchain-r/test && \
+    apt-get install gcc-4.9 && \
+    apt-get upgrade libstdc++6 && \
+    apt-get dist-upgrade
+
 RUN pip install poetry
 RUN pip install jupyter notebook
 RUN pip install poetry-kernel
@@ -31,3 +36,5 @@ RUN CMAKE_ARGS="-DLLAMA_CUBLAS=1" FORCE_CMAKE=1 LLAMA_CUBLAS=1 poetry run pip in
 
 EXPOSE 8888
 CMD jupyter notebook --no-browser --port 8888 --ip=* --allow-root
+
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/lib/x86_64-linux-gnu/
