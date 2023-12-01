@@ -9,6 +9,7 @@ from langchain.llms import LlamaCpp
 from langchain.memory import ReadOnlySharedMemory
 from langchain.prompts import ChatPromptTemplate, HumanMessagePromptTemplate
 from langchain.chains import LLMChain
+from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.vectorstores import Chroma, VectorStore
 
 from llm_sre.models.configuration.task import TaskConfiguration
@@ -47,7 +48,11 @@ class LLM:
         if requirements_file_path:
             document_loader = UnstructuredFileLoader(requirements_file_path)
             document = document_loader.load()
-            self._vector_store = Chroma.from_documents(documents=document, embedding=GPT4AllEmbeddings())
+            text_splitter = RecursiveCharacterTextSplitter(
+                chunk_size=1000, chunk_overlap=200, add_start_index=True
+            )
+            split_document = text_splitter.split_documents(document)
+            self._vector_store = Chroma.from_documents(documents=split_document, embedding=GPT4AllEmbeddings())
 
     def prompt(self, *args) -> Any:
         self._prepare_prompt(*args)
